@@ -48,6 +48,8 @@
     .feature-list li { padding: 4px 0; font-size: 0.9em; }
     .feature-list li::before { content: "\2713"; color: #2da44e; font-weight: 700; margin-right: 8px; }
     .proto-table td:nth-child(2), .proto-table td:nth-child(3) { text-align: center; }
+    .yes { color: #1a7f37; font-weight: 700; }
+    .no { color: #cf222e; font-weight: 700; }
   </style>
 </head>
 <body>
@@ -68,36 +70,6 @@
       <p>Released: <span id="release-date"></span></p>
     </div>
     <p style="margin-top: 8px; font-size: 0.9em; color: #57606a;">Auto-updated and signed APK packages for <strong>PassWall2</strong> on OpenWrt. Synced every 6 hours from upstream.</p>
-  </div>
-
-  <div class="card">
-    <h2>Features</h2>
-    <ul class="feature-list">
-      <li>Single-command installation via <code class="inline-code">apk</code></li>
-      <li>Automatic package updates every 6 hours from upstream</li>
-      <li>All packages are signed with a repository RSA key</li>
-      <li>17 supported architectures (ARM, ARM64, MIPS, x86_64)</li>
-      <li>Kill switch functionality</li>
-      <li>TLS fragmentation support</li>
-      <li>WARP connection support</li>
-    </ul>
-  </div>
-
-  <div class="card">
-    <h2>Supported Protocols</h2>
-    <table class="proto-table">
-      <tr><th>Protocol</th><th>Xray</th><th>Sing-Box</th></tr>
-      <tr><td>VLESS</td><td>&#10003;</td><td>&#10003;</td></tr>
-      <tr><td>VMESS</td><td>&#10003;</td><td>&#10003;</td></tr>
-      <tr><td>REALITY</td><td>&#10003;</td><td>&#10007;</td></tr>
-      <tr><td>TROJAN</td><td>&#10003;</td><td>&#10003;</td></tr>
-      <tr><td>Shadowsocks</td><td>&#10003;</td><td>&#10003;</td></tr>
-      <tr><td>WireGuard</td><td>&#10003;</td><td>&#10003;</td></tr>
-      <tr><td>SOCKS</td><td>&#10003;</td><td>&#10003;</td></tr>
-      <tr><td>HTTP</td><td>&#10003;</td><td>&#10003;</td></tr>
-      <tr><td>Hysteria2</td><td>&#10007;</td><td>&#10003;</td></tr>
-      <tr><td>TUIC</td><td>&#10007;</td><td>&#10003;</td></tr>
-    </table>
   </div>
 
   <div class="card">
@@ -160,6 +132,36 @@ apk add *.apk</code><button class="copy-btn" onclick="copyCmd('cmd-install')">Co
         </div>
       </div>
     </div>
+  </div>
+
+  <div class="card">
+    <h2>Features</h2>
+    <ul class="feature-list">
+      <li>Single-command installation via <code class="inline-code">apk</code></li>
+      <li>Automatic package updates every 6 hours from upstream</li>
+      <li>All packages are signed with a repository RSA key</li>
+      <li>17 supported architectures (ARM, ARM64, MIPS, x86_64)</li>
+      <li>Kill switch functionality</li>
+      <li>TLS fragmentation support</li>
+      <li>WARP connection support</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Supported Protocols</h2>
+    <table class="proto-table">
+      <tr><th>Protocol</th><th>Xray</th><th>Sing-Box</th></tr>
+      <tr><td>VLESS</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
+      <tr><td>VMESS</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
+      <tr><td>REALITY</td><td class="yes">&#10003;</td><td class="no">&#10007;</td></tr>
+      <tr><td>TROJAN</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
+      <tr><td>Shadowsocks</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
+      <tr><td>WireGuard</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
+      <tr><td>SOCKS</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
+      <tr><td>HTTP</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
+      <tr><td>Hysteria2</td><td class="no">&#10007;</td><td class="yes">&#10003;</td></tr>
+      <tr><td>TUIC</td><td class="no">&#10007;</td><td class="yes">&#10003;</td></tr>
+    </table>
   </div>
 
   <div class="card">
