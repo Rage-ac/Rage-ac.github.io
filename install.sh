@@ -23,6 +23,10 @@ apk add luci-app-passwall2
 echo "[5/5] Installing nftables dependencies..."
 apk add kmod-nft-socket kmod-nft-tproxy
 
+echo "[6/6] Restarting PassWall2..."
+/etc/init.d/passwall2 enable
+/etc/init.d/passwall2 restart
+
 echo ""
 echo "=== PassWall2 installed successfully ==="
 echo "Open LuCI: Services -> PassWall 2"
