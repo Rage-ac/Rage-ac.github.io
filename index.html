@@ -37,7 +37,6 @@
     .step-num { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; background: #0969da; color: #fff; border-radius: 50%; font-size: 0.8em; font-weight: 700; margin-right: 8px; flex-shrink: 0; }
     .step { display: flex; align-items: flex-start; margin: 12px 0; }
     .step-content { flex: 1; }
-    .arch-select { width: 100%; padding: 8px 12px; border: 1px solid #d0d7de; border-radius: 6px; font-size: 0.9em; margin: 8px 0; background: #fff; }
     #loading { text-align: center; padding: 20px; color: #57606a; }
     footer { text-align: center; padding: 24px; color: #57606a; font-size: 0.85em; }
   </style>
@@ -71,26 +70,16 @@
 
     <div id="tab-repo" class="tab-content active">
       <p style="margin-bottom: 12px; font-size: 0.9em; color: #57606a;">
-        Add the repository to your router. Packages will install and update via <code>apk</code>.
+        Add the repository to your router. <code>apk</code> automatically detects your architecture.
       </p>
 
       <div class="step">
         <span class="step-num">1</span>
         <div class="step-content">
-          <strong>Select your architecture</strong>
-          <select id="arch-select" class="arch-select" onchange="updateRepoCmd()">
-            <option value="">Loading architectures...</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="step">
-        <span class="step-num">2</span>
-        <div class="step-content">
           <strong>Run on your router</strong>
           <pre><code id="cmd-repo">wget -O /etc/apk/keys/passwall2-repo.rsa.pub \
   https://rage-ac.github.io/Passwall2/keys/passwall2-repo.rsa.pub
-echo "https://rage-ac.github.io/Passwall2/packages/aarch64_generic" >> /etc/apk/repositories
+echo "https://rage-ac.github.io/Passwall2/packages" >> /etc/apk/repositories
 apk update
 apk add luci-app-passwall2</code><button class="copy-btn" onclick="copyCmd('cmd-repo')">Copy</button></pre>
         </div>
@@ -157,20 +146,11 @@ const ARCH_LABELS = {
   'x86_64': 'x86_64 (PC / VM)',
 };
 
-let archList = [];
-
 function switchTab(tab) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
   document.getElementById(`tab-${tab}`).classList.add('active');
-}
-
-function updateRepoCmd() {
-  const arch = document.getElementById('arch-select').value;
-  if (!arch) return;
-  const cmd = `wget -O /etc/apk/keys/passwall2-repo.rsa.pub \\\n  ${PAGES_BASE}/keys/passwall2-repo.rsa.pub\necho "${PAGES_BASE}/packages/${arch}" >> /etc/apk/repositories\napk update\napk add luci-app-passwall2`;
-  document.getElementById('cmd-repo').textContent = cmd;
 }
 
 async function loadRelease() {
@@ -193,15 +173,6 @@ async function loadRelease() {
         zips.push({ arch, label: ARCH_LABELS[arch] || arch, url: a.browser_download_url, size: a.size });
       }
     });
-
-    archList = zips.map(z => z.arch);
-
-    // Populate arch selector
-    const select = document.getElementById('arch-select');
-    select.innerHTML = zips.map(z =>
-      `<option value="${z.arch}">${z.label} (${z.arch})</option>`
-    ).join('');
-    updateRepoCmd();
 
     // Download grid
     const grid = document.getElementById('downloads-grid');
