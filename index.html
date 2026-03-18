@@ -107,7 +107,15 @@
       <div class="step">
         <span class="step-num">1</span>
         <div class="step-content">
-          <strong>Run on your router</strong>
+          <strong>One click script</strong>
+          <pre><code id="cmd-one">wget -O- https://rage-ac.github.io/install.sh | sh</code><button class="copy-btn" onclick="copyCmd('cmd-one')">Copy</button></pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <span class="step-num">2</span>
+        <div class="step-content">
+          <strong>Or run manually on your router</strong>
           <pre><code id="cmd-repo">wget -O /etc/apk/keys/passwall2-repo.rsa.pub \
   https://rage-ac.github.io/Passwall2/keys/passwall2-repo.rsa.pub
 grep -q 'rage-ac.github.io/Passwall2' /etc/apk/repositories || \
