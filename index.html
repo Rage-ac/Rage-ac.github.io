@@ -15,9 +15,14 @@
     header a:hover { color: #fff; }
     .card { background: #fff; border: 1px solid #d0d7de; border-radius: 6px; padding: 24px; margin-bottom: 16px; }
     .card h2 { font-size: 1.2em; margin-bottom: 12px; border-bottom: 1px solid #d0d7de; padding-bottom: 8px; }
+    .tabs { display: flex; gap: 0; margin-bottom: 16px; border-bottom: 2px solid #d0d7de; }
+    .tab { padding: 8px 16px; cursor: pointer; font-weight: 600; font-size: 0.9em; color: #57606a; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+    .tab.active { color: #0969da; border-bottom-color: #0969da; }
+    .tab:hover { color: #24292f; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
     pre { background: #161b22; color: #e6edf3; padding: 16px; border-radius: 6px; overflow-x: auto; font-size: 0.85em; margin: 8px 0; position: relative; }
     code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
-    .inline-code { background: #f0f3f6; padding: 2px 6px; border-radius: 4px; font-size: 0.85em; }
     .copy-btn { position: absolute; top: 8px; right: 8px; background: #30363d; color: #8b949e; border: 1px solid #484f58; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 0.75em; }
     .copy-btn:hover { color: #e6edf3; border-color: #8b949e; }
     a { color: #0969da; text-decoration: none; }
@@ -32,6 +37,7 @@
     .step-num { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; background: #0969da; color: #fff; border-radius: 50%; font-size: 0.8em; font-weight: 700; margin-right: 8px; flex-shrink: 0; }
     .step { display: flex; align-items: flex-start; margin: 12px 0; }
     .step-content { flex: 1; }
+    .arch-select { width: 100%; padding: 8px 12px; border: 1px solid #d0d7de; border-radius: 6px; font-size: 0.9em; margin: 8px 0; background: #fff; }
     #loading { text-align: center; padding: 20px; color: #57606a; }
     footer { text-align: center; padding: 24px; color: #57606a; font-size: 0.85em; }
   </style>
@@ -58,22 +64,56 @@
   <div class="card">
     <h2>Installation</h2>
 
-    <div class="step">
-      <span class="step-num">1</span>
-      <div class="step-content">
-        <strong>Add the signing key</strong>
-        <pre><code id="cmd-key">wget -O /etc/apk/keys/passwall2-repo.rsa.pub \
-  https://rage-ac.github.io/Passwall2/keys/passwall2-repo.rsa.pub</code><button class="copy-btn" onclick="copyCmd('cmd-key')">Copy</button></pre>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('repo')">APK Repository</div>
+      <div class="tab" onclick="switchTab('manual')">Manual Download</div>
+    </div>
+
+    <div id="tab-repo" class="tab-content active">
+      <p style="margin-bottom: 12px; font-size: 0.9em; color: #57606a;">
+        Add the repository to your router. Packages will install and update via <code>apk</code>.
+      </p>
+
+      <div class="step">
+        <span class="step-num">1</span>
+        <div class="step-content">
+          <strong>Select your architecture</strong>
+          <select id="arch-select" class="arch-select" onchange="updateRepoCmd()">
+            <option value="">Loading architectures...</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="step">
+        <span class="step-num">2</span>
+        <div class="step-content">
+          <strong>Run on your router</strong>
+          <pre><code id="cmd-repo">wget -O /etc/apk/keys/passwall2-repo.rsa.pub \
+  https://rage-ac.github.io/Passwall2/keys/passwall2-repo.rsa.pub
+echo "https://rage-ac.github.io/Passwall2/packages/aarch64_generic" >> /etc/apk/repositories
+apk update
+apk add luci-app-passwall2</code><button class="copy-btn" onclick="copyCmd('cmd-repo')">Copy</button></pre>
+        </div>
       </div>
     </div>
 
-    <div class="step">
-      <span class="step-num">2</span>
-      <div class="step-content">
-        <strong>Download the package for your architecture</strong>
-        <p style="margin: 4px 0; font-size: 0.9em; color: #57606a;">Select your architecture below, then upload the ZIP to your router and run:</p>
-        <pre><code id="cmd-install">unzip passwall2_signed_apk_*.zip
+    <div id="tab-manual" class="tab-content">
+      <div class="step">
+        <span class="step-num">1</span>
+        <div class="step-content">
+          <strong>Add the signing key</strong>
+          <pre><code id="cmd-key">wget -O /etc/apk/keys/passwall2-repo.rsa.pub \
+  https://rage-ac.github.io/Passwall2/keys/passwall2-repo.rsa.pub</code><button class="copy-btn" onclick="copyCmd('cmd-key')">Copy</button></pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <span class="step-num">2</span>
+        <div class="step-content">
+          <strong>Download ZIP for your architecture and install</strong>
+          <pre><code id="cmd-install">unzip passwall2_signed_apk_*.zip
 apk add *.apk</code><button class="copy-btn" onclick="copyCmd('cmd-install')">Copy</button></pre>
+        </div>
       </div>
     </div>
   </div>
@@ -85,22 +125,16 @@ apk add *.apk</code><button class="copy-btn" onclick="copyCmd('cmd-install')">Co
     </div>
   </div>
 
-  <div class="card">
-    <h2>Standalone Packages</h2>
-    <div id="standalone" class="download-grid">
-      <div id="loading-st">Loading...</div>
-    </div>
-  </div>
-
 </div>
 
 <footer>
   Auto-synced from <a href="https://github.com/Openwrt-Passwall/openwrt-passwall2">Openwrt-Passwall/openwrt-passwall2</a>
-  &middot; Packages are signed with a repository RSA key
+  &middot; All packages are signed with a repository RSA key
 </footer>
 
 <script>
 const REPO = 'Rage-ac/Passwall2';
+const PAGES_BASE = 'https://rage-ac.github.io/Passwall2';
 const API = `https://api.github.com/repos/${REPO}/releases/latest`;
 
 const ARCH_LABELS = {
@@ -123,6 +157,22 @@ const ARCH_LABELS = {
   'x86_64': 'x86_64 (PC / VM)',
 };
 
+let archList = [];
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+  document.getElementById(`tab-${tab}`).classList.add('active');
+}
+
+function updateRepoCmd() {
+  const arch = document.getElementById('arch-select').value;
+  if (!arch) return;
+  const cmd = `wget -O /etc/apk/keys/passwall2-repo.rsa.pub \\\n  ${PAGES_BASE}/keys/passwall2-repo.rsa.pub\necho "${PAGES_BASE}/packages/${arch}" >> /etc/apk/repositories\napk update\napk add luci-app-passwall2`;
+  document.getElementById('cmd-repo').textContent = cmd;
+}
+
 async function loadRelease() {
   try {
     const res = await fetch(API);
@@ -136,17 +186,24 @@ async function loadRelease() {
     document.getElementById('loading').style.display = 'none';
 
     const zips = [];
-    const standalone = [];
 
     data.assets.forEach(a => {
       if (a.name.startsWith('passwall2_signed_apk_') && a.name.endsWith('.zip')) {
         const arch = a.name.replace('passwall2_signed_apk_', '').replace('.zip', '');
         zips.push({ arch, label: ARCH_LABELS[arch] || arch, url: a.browser_download_url, size: a.size });
-      } else if (a.name.endsWith('.apk')) {
-        standalone.push({ name: a.name, url: a.browser_download_url, size: a.size });
       }
     });
 
+    archList = zips.map(z => z.arch);
+
+    // Populate arch selector
+    const select = document.getElementById('arch-select');
+    select.innerHTML = zips.map(z =>
+      `<option value="${z.arch}">${z.label} (${z.arch})</option>`
+    ).join('');
+    updateRepoCmd();
+
+    // Download grid
     const grid = document.getElementById('downloads-grid');
     grid.innerHTML = zips.map(z => `
       <div class="download-item">
@@ -154,25 +211,13 @@ async function loadRelease() {
           <div class="arch-name">${z.label}</div>
           <div style="font-size:0.75em;color:#57606a">${z.arch} &middot; ${formatSize(z.size)}</div>
         </div>
-        <a href="${z.url}" class="dl-btn">Download</a>
-      </div>
-    `).join('');
-
-    const stGrid = document.getElementById('standalone');
-    stGrid.innerHTML = standalone.map(s => `
-      <div class="download-item">
-        <div>
-          <div class="arch-name">${s.name}</div>
-          <div style="font-size:0.75em;color:#57606a">${formatSize(s.size)}</div>
-        </div>
-        <a href="${s.url}" class="dl-btn">Download</a>
+        <a href="${z.url}" class="dl-btn">ZIP</a>
       </div>
     `).join('');
 
   } catch (e) {
-    document.getElementById('loading').textContent = 'Failed to load release info. Visit GitHub directly.';
+    document.getElementById('loading').textContent = 'Failed to load release info.';
     document.getElementById('loading-dl').textContent = 'Failed to load.';
-    document.getElementById('loading-st').textContent = 'Failed to load.';
   }
 }
 
