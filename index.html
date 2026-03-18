@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PassWall2 APK Repository</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; color: #24292f; line-height: 1.6; background: #f6f8fa; }
+    .container { max-width: 900px; margin: 0 auto; padding: 24px 20px; }
+    header { background: #24292f; color: #fff; padding: 32px 0; margin-bottom: 24px; }
+    header .container { display: flex; align-items: center; justify-content: space-between; }
+    header h1 { font-size: 1.5em; }
+    header a { color: #8b949e; text-decoration: none; font-size: 0.9em; }
+    header a:hover { color: #fff; }
+    .card { background: #fff; border: 1px solid #d0d7de; border-radius: 6px; padding: 24px; margin-bottom: 16px; }
+    .card h2 { font-size: 1.2em; margin-bottom: 12px; border-bottom: 1px solid #d0d7de; padding-bottom: 8px; }
+    pre { background: #161b22; color: #e6edf3; padding: 16px; border-radius: 6px; overflow-x: auto; font-size: 0.85em; margin: 8px 0; position: relative; }
+    code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
+    .inline-code { background: #f0f3f6; padding: 2px 6px; border-radius: 4px; font-size: 0.85em; }
+    .copy-btn { position: absolute; top: 8px; right: 8px; background: #30363d; color: #8b949e; border: 1px solid #484f58; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 0.75em; }
+    .copy-btn:hover { color: #e6edf3; border-color: #8b949e; }
+    a { color: #0969da; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .download-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; margin-top: 12px; }
+    .download-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border: 1px solid #d0d7de; border-radius: 6px; background: #f6f8fa; }
+    .download-item:hover { border-color: #0969da; background: #f0f7ff; }
+    .arch-name { font-weight: 600; font-size: 0.9em; }
+    .dl-btn { background: #2da44e; color: #fff; padding: 4px 12px; border-radius: 4px; font-size: 0.8em; text-decoration: none; white-space: nowrap; }
+    .dl-btn:hover { background: #218838; text-decoration: none; }
+    .version-badge { display: inline-block; background: #ddf4ff; color: #0969da; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; font-weight: 600; }
+    .step-num { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; background: #0969da; color: #fff; border-radius: 50%; font-size: 0.8em; font-weight: 700; margin-right: 8px; flex-shrink: 0; }
+    .step { display: flex; align-items: flex-start; margin: 12px 0; }
+    .step-content { flex: 1; }
+    #loading { text-align: center; padding: 20px; color: #57606a; }
+    footer { text-align: center; padding: 24px; color: #57606a; font-size: 0.85em; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1>PassWall2 APK Repository</h1>
+    <a href="https://github.com/Rage-ac/Passwall2">GitHub</a>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Latest Release <span id="version-badge"></span></h2>
+    <div id="loading">Loading release info...</div>
+    <div id="release-info" style="display:none">
+      <p>Released: <span id="release-date"></span></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Installation</h2>
+
+    <div class="step">
+      <span class="step-num">1</span>
+      <div class="step-content">
+        <strong>Add the signing key</strong>
+        <pre><code id="cmd-key">wget -O /etc/apk/keys/passwall2-repo.rsa.pub \
+  https://rage-ac.github.io/Passwall2/keys/passwall2-repo.rsa.pub</code><button class="copy-btn" onclick="copyCmd('cmd-key')">Copy</button></pre>
+      </div>
+    </div>
+
+    <div class="step">
+      <span class="step-num">2</span>
+      <div class="step-content">
+        <strong>Download the package for your architecture</strong>
+        <p style="margin: 4px 0; font-size: 0.9em; color: #57606a;">Select your architecture below, then upload the ZIP to your router and run:</p>
+        <pre><code id="cmd-install">unzip passwall2_signed_apk_*.zip
+apk add *.apk</code><button class="copy-btn" onclick="copyCmd('cmd-install')">Copy</button></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Download by Architecture</h2>
+    <div id="downloads-grid" class="download-grid">
+      <div id="loading-dl">Loading...</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Standalone Packages</h2>
+    <div id="standalone" class="download-grid">
+      <div id="loading-st">Loading...</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Auto-synced from <a href="https://github.com/Openwrt-Passwall/openwrt-passwall2">Openwrt-Passwall/openwrt-passwall2</a>
+  &middot; Packages are signed with a repository RSA key
+</footer>
+
+<script>
+const REPO = 'Rage-ac/Passwall2';
+const API = `https://api.github.com/repos/${REPO}/releases/latest`;
+
+const ARCH_LABELS = {
+  'aarch64_cortex-a53': 'ARM64 Cortex-A53 (RPi 3/4)',
+  'aarch64_cortex-a72': 'ARM64 Cortex-A72 (RPi 4/5)',
+  'aarch64_generic': 'ARM64 Generic',
+  'arm_cortex-a15_neon-vfpv4': 'ARM Cortex-A15',
+  'arm_cortex-a5_vfpv4': 'ARM Cortex-A5',
+  'arm_cortex-a7': 'ARM Cortex-A7',
+  'arm_cortex-a7_neon-vfpv4': 'ARM Cortex-A7 NEON',
+  'arm_cortex-a8_vfpv3': 'ARM Cortex-A8',
+  'arm_cortex-a9': 'ARM Cortex-A9',
+  'arm_cortex-a9_neon': 'ARM Cortex-A9 NEON',
+  'arm_cortex-a9_vfpv3-d16': 'ARM Cortex-A9 VFPv3',
+  'mips_24kc': 'MIPS 24Kc (MT7621)',
+  'mips_4kec': 'MIPS 4KEc',
+  'mips_mips32': 'MIPS32',
+  'mipsel_74kc': 'MIPSEL 74Kc (BCM47xx)',
+  'mipsel_mips32': 'MIPSEL MIPS32',
+  'x86_64': 'x86_64 (PC / VM)',
+};
+
+async function loadRelease() {
+  try {
+    const res = await fetch(API);
+    const data = await res.json();
+
+    document.getElementById('version-badge').innerHTML =
+      `<span class="version-badge">${data.tag_name}</span>`;
+    document.getElementById('release-date').textContent =
+      new Date(data.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    document.getElementById('release-info').style.display = 'block';
+    document.getElementById('loading').style.display = 'none';
+
+    const zips = [];
+    const standalone = [];
+
+    data.assets.forEach(a => {
+      if (a.name.startsWith('passwall2_signed_apk_') && a.name.endsWith('.zip')) {
+        const arch = a.name.replace('passwall2_signed_apk_', '').replace('.zip', '');
+        zips.push({ arch, label: ARCH_LABELS[arch] || arch, url: a.browser_download_url, size: a.size });
+      } else if (a.name.endsWith('.apk')) {
+        standalone.push({ name: a.name, url: a.browser_download_url, size: a.size });
+      }
+    });
+
+    const grid = document.getElementById('downloads-grid');
+    grid.innerHTML = zips.map(z => `
+      <div class="download-item">
+        <div>
+          <div class="arch-name">${z.label}</div>
+          <div style="font-size:0.75em;color:#57606a">${z.arch} &middot; ${formatSize(z.size)}</div>
+        </div>
+        <a href="${z.url}" class="dl-btn">Download</a>
+      </div>
+    `).join('');
+
+    const stGrid = document.getElementById('standalone');
+    stGrid.innerHTML = standalone.map(s => `
+      <div class="download-item">
+        <div>
+          <div class="arch-name">${s.name}</div>
+          <div style="font-size:0.75em;color:#57606a">${formatSize(s.size)}</div>
+        </div>
+        <a href="${s.url}" class="dl-btn">Download</a>
+      </div>
+    `).join('');
+
+  } catch (e) {
+    document.getElementById('loading').textContent = 'Failed to load release info. Visit GitHub directly.';
+    document.getElementById('loading-dl').textContent = 'Failed to load.';
+    document.getElementById('loading-st').textContent = 'Failed to load.';
+  }
+}
+
+function formatSize(bytes) {
+  if (bytes > 1048576) return (bytes / 1048576).toFixed(1) + ' MB';
+  return (bytes / 1024).toFixed(0) + ' KB';
+}
+
+function copyCmd(id) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text);
+}
+
+loadRelease();
+</script>
+
+</body>
+</html>
