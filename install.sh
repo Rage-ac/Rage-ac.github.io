@@ -17,8 +17,11 @@ grep -q 'rage-ac.github.io/Passwall2' /etc/apk/repositories || \
 echo "[3/4] Updating package index..."
 apk update
 
-echo "[4/4] Installing PassWall2..."
+echo "[4/5] Installing PassWall2..."
 apk add luci-app-passwall2
+
+echo "[5/5] Installing nftables dependencies..."
+apk add kmod-nft-socket kmod-nft-tproxy
 
 echo ""
 echo "=== PassWall2 installed successfully ==="
