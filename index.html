@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PassWall2 APK Repository</title>
+  <title>PassWall2 APK Repository for OpenWrt</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; color: #24292f; line-height: 1.6; background: #f6f8fa; }
@@ -23,6 +23,7 @@
     .tab-content.active { display: block; }
     pre { background: #161b22; color: #e6edf3; padding: 16px; border-radius: 6px; overflow-x: auto; font-size: 0.85em; margin: 8px 0; position: relative; }
     code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
+    .inline-code { background: #f0f3f6; padding: 2px 6px; border-radius: 4px; font-size: 0.85em; }
     .copy-btn { position: absolute; top: 8px; right: 8px; background: #30363d; color: #8b949e; border: 1px solid #484f58; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 0.75em; }
     .copy-btn:hover { color: #e6edf3; border-color: #8b949e; }
     a { color: #0969da; text-decoration: none; }
@@ -39,6 +40,14 @@
     .step-content { flex: 1; }
     #loading { text-align: center; padding: 20px; color: #57606a; }
     footer { text-align: center; padding: 24px; color: #57606a; font-size: 0.85em; }
+    table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 0.9em; }
+    th, td { padding: 8px 12px; border: 1px solid #d0d7de; text-align: left; }
+    th { background: #f6f8fa; font-weight: 600; }
+    .note { background: #fff8c5; border: 1px solid #d4a72c; border-radius: 6px; padding: 12px 16px; margin: 12px 0; font-size: 0.9em; }
+    .feature-list { list-style: none; padding: 0; }
+    .feature-list li { padding: 4px 0; font-size: 0.9em; }
+    .feature-list li::before { content: "\2713"; color: #2da44e; font-weight: 700; margin-right: 8px; }
+    .proto-table td:nth-child(2), .proto-table td:nth-child(3) { text-align: center; }
   </style>
 </head>
 <body>
@@ -58,6 +67,51 @@
     <div id="release-info" style="display:none">
       <p>Released: <span id="release-date"></span></p>
     </div>
+    <p style="margin-top: 8px; font-size: 0.9em; color: #57606a;">Auto-updated and signed APK packages for <strong>PassWall2</strong> on OpenWrt. Synced every 6 hours from upstream.</p>
+  </div>
+
+  <div class="card">
+    <h2>Features</h2>
+    <ul class="feature-list">
+      <li>Single-command installation via <code class="inline-code">apk</code></li>
+      <li>Automatic package updates every 6 hours from upstream</li>
+      <li>All packages are signed with a repository RSA key</li>
+      <li>17 supported architectures (ARM, ARM64, MIPS, x86_64)</li>
+      <li>Kill switch functionality</li>
+      <li>TLS fragmentation support</li>
+      <li>WARP connection support</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Supported Protocols</h2>
+    <table class="proto-table">
+      <tr><th>Protocol</th><th>Xray</th><th>Sing-Box</th></tr>
+      <tr><td>VLESS</td><td>&#10003;</td><td>&#10003;</td></tr>
+      <tr><td>VMESS</td><td>&#10003;</td><td>&#10003;</td></tr>
+      <tr><td>REALITY</td><td>&#10003;</td><td>&#10007;</td></tr>
+      <tr><td>TROJAN</td><td>&#10003;</td><td>&#10003;</td></tr>
+      <tr><td>Shadowsocks</td><td>&#10003;</td><td>&#10003;</td></tr>
+      <tr><td>WireGuard</td><td>&#10003;</td><td>&#10003;</td></tr>
+      <tr><td>SOCKS</td><td>&#10003;</td><td>&#10003;</td></tr>
+      <tr><td>HTTP</td><td>&#10003;</td><td>&#10003;</td></tr>
+      <tr><td>Hysteria2</td><td>&#10007;</td><td>&#10003;</td></tr>
+      <tr><td>TUIC</td><td>&#10007;</td><td>&#10003;</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Requirements</h2>
+    <table>
+      <tr><th>Parameter</th><th>Minimum</th></tr>
+      <tr><td>Processor</td><td>700 MHz</td></tr>
+      <tr><td>RAM</td><td>256 MB</td></tr>
+      <tr><td>Firmware</td><td>OpenWrt with APK package manager</td></tr>
+    </table>
+    <div class="note">
+      Routers with 128 MB RAM should use OpenWrt 22.03.3.<br>
+      WAN and LAN addresses <strong>must</strong> be different.
+    </div>
   </div>
 
   <div class="card">
@@ -70,7 +124,7 @@
 
     <div id="tab-repo" class="tab-content active">
       <p style="margin-bottom: 12px; font-size: 0.9em; color: #57606a;">
-        Add the repository to your router. <code>apk</code> automatically detects your architecture.
+        Add the repository to your router. <code class="inline-code">apk</code> automatically detects your architecture.
       </p>
 
       <div class="step">
@@ -120,31 +174,32 @@ apk add *.apk</code><button class="copy-btn" onclick="copyCmd('cmd-install')">Co
 <footer>
   Auto-synced from <a href="https://github.com/Openwrt-Passwall/openwrt-passwall2">Openwrt-Passwall/openwrt-passwall2</a>
   &middot; All packages are signed with a repository RSA key
+  &middot; <a href="https://github.com/Rage-ac/Passwall2">Source</a>
 </footer>
 
 <script>
 const REPO = 'Rage-ac/Passwall2';
-const PAGES_BASE = 'https://rage-ac.github.io/Passwall2';
 const API = `https://api.github.com/repos/${REPO}/releases/latest`;
 
 const ARCH_LABELS = {
   'aarch64_cortex-a53': 'ARM64 Cortex-A53 (RPi 3/4)',
   'aarch64_cortex-a72': 'ARM64 Cortex-A72 (RPi 4/5)',
   'aarch64_generic': 'ARM64 Generic',
-  'arm_cortex-a15_neon-vfpv4': 'ARM Cortex-A15',
+  'arm_cortex-a15_neon-vfpv4': 'ARM Cortex-A15 NEON',
   'arm_cortex-a5_vfpv4': 'ARM Cortex-A5',
   'arm_cortex-a7': 'ARM Cortex-A7',
   'arm_cortex-a7_neon-vfpv4': 'ARM Cortex-A7 NEON',
-  'arm_cortex-a8_vfpv3': 'ARM Cortex-A8',
+  'arm_cortex-a8_vfpv3': 'ARM Cortex-A8 (OMAP3)',
   'arm_cortex-a9': 'ARM Cortex-A9',
   'arm_cortex-a9_neon': 'ARM Cortex-A9 NEON',
-  'arm_cortex-a9_vfpv3-d16': 'ARM Cortex-A9 VFPv3',
+  'arm_cortex-a9_vfpv3-d16': 'ARM Cortex-A9 (Armada)',
   'mips_24kc': 'MIPS 24Kc (MT7621)',
-  'mips_4kec': 'MIPS 4KEc',
-  'mips_mips32': 'MIPS32',
+  'mips_4kec': 'MIPS 4KEc (Atheros)',
+  'mips_mips32': 'MIPS32 Generic',
   'mipsel_74kc': 'MIPSEL 74Kc (BCM47xx)',
   'mipsel_mips32': 'MIPSEL MIPS32',
   'x86_64': 'x86_64 (PC / VM)',
+  'noarch': 'All architectures (noarch)',
 };
 
 function switchTab(tab) {
@@ -171,11 +226,11 @@ async function loadRelease() {
     data.assets.forEach(a => {
       if (a.name.startsWith('passwall2_signed_apk_') && a.name.endsWith('.zip')) {
         const arch = a.name.replace('passwall2_signed_apk_', '').replace('.zip', '');
+        if (arch === 'noarch') return;
         zips.push({ arch, label: ARCH_LABELS[arch] || arch, url: a.browser_download_url, size: a.size });
       }
     });
 
-    // Download grid
     const grid = document.getElementById('downloads-grid');
     grid.innerHTML = zips.map(z => `
       <div class="download-item">
