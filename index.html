@@ -122,7 +122,7 @@ grep -q 'rage-ac.github.io/Passwall2' /etc/apk/repositories || \
   echo "https://rage-ac.github.io/Passwall2/packages" >> /etc/apk/repositories
 apk update
 apk add luci-app-passwall2
-apk add kmod-nft-socket kmod-nft-tproxy
+apk add kmod-nft-socket kmod-nft-tproxy dnsmasq-full
 /etc/init.d/passwall2 restart</code><button class="copy-btn" onclick="copyCmd('cmd-repo')">Copy</button></pre>
         </div>
       </div>
